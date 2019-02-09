@@ -72,9 +72,43 @@ router.get('/edit/:id', (req, res, next) => {
 
 });
 
+/* POST - process the information from Edit page */
+router.post('/edit/:id', (req, res, next) => {
+    let id = req.params.id;
+
+    let updatedContact = contactModel({
+        "_id": id,
+        "firstName": req.body.FirstNameTextField,
+        "lastName": req.body.LastNameTextField,
+        "age":req.body.AgeTextField
+    });
+
+    contactModel.update({_id: id}, updatedContact, (err) => {
+        if(err) {
+            console.log(err);
+            res.end(err);
+        }
+        else {
+            // refresh the contact-list
+            res.redirect('/contact-list');
+        }
+    })
+});
+
 /* GET the and process the delete page */
 router.get('/delete/:id', (req, res, next) => {
+    let id = req.params.id;
 
+    contactModel.remove({_id: id}, (err) => {
+        if(err) {
+            console.log(err);
+            res.end(err);
+        }
+        else {
+            // refresh the contact list
+            res.redirect('/contact-list');
+        }
+    });
 });
 
 
