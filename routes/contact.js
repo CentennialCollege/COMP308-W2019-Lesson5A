@@ -3,11 +3,11 @@ let router = express.Router();
 let mongoose = require('mongoose');
 
 // create a reference to the contact model
-let contact = require('../models/contact');
+let contactModel = require('../models/contact');
 
 /* GET contact list page - READ */
 router.get('/', (req, res, next) => {
-    contact.find((err, contactList) => {
+    contactModel.find((err, contactList) => {
         
         if(err) {
             return console.error(err);
@@ -34,13 +34,13 @@ router.get('/add', (req, res, next) => {
 // POST - process the Add page for the Contact-List
 router.post('/add', (req, res, next) => {
     
-    let newContact = contact({
+    let newContact = contactModel({
         "firstName":req.body.FirstNameTextField,
         "lastName":req.body.LastNameTextField,
         "age":req.body.AgeTextField
     });
 
-    contact.create(newContact, (err, contact) => {
+    contactModel.create(newContact, (err, contact) => {
         if(err) {
             console.log(err);
             res.end(err);
@@ -50,7 +50,30 @@ router.post('/add', (req, res, next) => {
             res.redirect('/contact-list');
         }
     });
-    
+});
+
+/* GET the Edit Page */
+router.get('/edit/:id', (req, res, next) => {
+    let id = req.params.id;
+
+    contactModel.findById(id, (err, contactObject) => {
+        if(err) {
+            console.log(err);
+            res.end(err);
+        }
+        else {
+            // show the edit view
+            res.render('contacts/edit', {
+                title: "Edit Contact",
+                contact: contactObject
+            });
+        }
+    });
+
+});
+
+/* GET the and process the delete page */
+router.get('/delete/:id', (req, res, next) => {
 
 });
 
